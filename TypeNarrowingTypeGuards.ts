@@ -29,6 +29,27 @@ function logOutput(value: string | number | string[] | Image) {
   if (typeof value === 'string') {
     value.toUpperCase();
   }
+
+  if (typeof value === 'number') {
+    Math.round(value);
+  }
+
+  /* if (typeof value === 'object') {
+    // value here is: either an Array or an Object
+    value
+  } */
+
+  // so we use Array.isArray() to check whether its an Array or not
+  if (Array.isArray(value)) {
+    // Now we have 100% an Array of strings
+    value.join('');
+  }
+
+  // object can be an object or an array too like an array
+  // so further narrowing down the type by putting AND case
+  if (typeof value === 'object' && !Array.isArray(value)) {
+    value.src;
+  }
 }
 
 logOutput('hi there');
