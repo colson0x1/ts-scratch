@@ -4,18 +4,30 @@ interface Book {
   title: string;
 }
 
-async function fetchBook() {
+// type safe way of accessing our API
+async function fetchBook(): Promise<Book> {
   const res = await fetch('/book');
   // when we get back response, we need to extract data out of it
-  const data = await res.json();
-  // data is the book that we fetched from API
-  // data is of type ANY
 
-  // Using Type Assertion to tell TypeScript for type ANY
-  // It tells TS, look we know this thing is of type any but just trust us,
-  // we're pretty sure it is a book object and has all the properties that
-  // book usually would
-  return data as Book;
+  // assigning data to type unknown
+  // we're doing this because we're reaching to this unknown API and we're not
+  // 100% sure whether or not it will give me back a book object that has a title
+  // that is a string
+  // maybe its gonna give me back a number or null or undefined or an array
+  const data: unknown = await res.json();
+
+  // type guard, type narrowing
+  if (
+    data &&
+    typeof data === 'object' &&
+    'title' in data &&
+    typeof data.title === 'string'
+  ) {
+    // now that data is truly a book
+    return data as Book;
+  }
+
+  throw new Error('Expected to get a book, but didnt');
 }
 
 async function run() {
